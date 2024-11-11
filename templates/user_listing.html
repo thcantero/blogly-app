@@ -2,12 +2,16 @@
 {% block title %} User Listing {% endblock %}
 
 {% block content %}
-<body>
+<h1>All Users</h1>
     <div class="container">
         <h1>Users</h1>
         <ul>List of Users
+            {% for user in users %}
+            <li><a href="/users/{{user.user_id}}">{{user.first_name}} {{user.last_name}}</a></li>
+            {% endfor %}
         </ul>
     </div>
-    <button>Add user</button>
-</body>
+    <form action="/users/new" method="POST">
+        <button type ='submit'>Add user</button>
+    </form>
 {% endblock %}

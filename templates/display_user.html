@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
-{% block title %} <h1>User Detail Pag</h1> {% endblock %}
+{% block title %} User Detail Page {% endblock %}
 
 {%block content %}
-<body>
+<h1>User Details</h1>
     <div class="container">
         <!-- <img> -->
-         <h3>First_name Last_name</h3>
-         <button>Edit</button>
-         <button>Delete</button>
+         <ul>
+            <li>First Name: {{user.first_name}}</li>
+            <li>Last Name: {{user.last_name}}</li>
+            <li>Photo: </li>
+         </ul>
+
+         <form>
+            <button formaction="/users/{{user.user_id}}/edit" method="POST">Edit</button>
+            <button formaction="/users/{{ user.user_id }}/delete" method="POST">Delete</button>
+        </form>
+         <a href="/">Go Back</a>
     </div>
-</body>
 {% endblock %}

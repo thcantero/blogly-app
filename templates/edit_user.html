@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %} Edit User Page {% endblock %}
+
+{%block content %}
+    <div class="container">
+        <!-- <img> -->
+     <h1>Edit User</h1>
+        
+         <form method="POST">
+            <label for="first-name">First Name</label>
+            <input type="text" name="first_name" id="first-name" value={{user.first_name}} required>
+
+            <label for="last-name">Last Name</label>
+            <input type="text" name="last_name" id="last-name" value={{user.last_name}} required>
+
+            <label for="image-url">Image URL</label>
+            <input type="text" name="image_url" id="image-url" value={{user.image_url}}>
+
+            <button formaction="/users/{{user.user_id}}/edit" method="POST">Save</button>
+            <button formaction="/users" method="POST">Cancel</button>
+        </form>
+         <a href="/">Go Back</a>
+    </div>
+{% endblock %}

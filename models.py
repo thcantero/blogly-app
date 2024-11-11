@@ -15,7 +15,7 @@ class User(db.Model):
          u = self
          return f"<User name={u.first_name} {u.last_name} {u.image_url}>"
 
-    id = db.Column( db.Integer, 
+    user_id = db.Column( db.Integer, 
                    primary_key=True, 
                    autoincrement=True)
     
@@ -25,7 +25,7 @@ class User(db.Model):
     last_name = db.Column(db.String(50), 
                      nullable=False)
     
-    image_url = db.Column(db.String(2083), 
+    image_url = db.Column(db.String, 
                           nullable=True)
     
     def edit_user(self):

@@ -1,0 +1,148 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: red;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+    text-align: center;
+}
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.navbar a:hover {
+    color: #ddd;
+}
+
+/* Main container */
+.container {
+    background-color: #fff;
+    padding: 2em;
+    max-width: 600px;
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Page titles */
+h1, h3 {
+    color: #333;
+    margin-bottom: 1em;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+input[type="text"] {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 100%;
+}
+
+/* Buttons */
+button {
+    padding: 0.75em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    color: #fff;
+    background-color: #333;
+    transition: background-color 0.3s;
+    width: 100px;
+    margin: 5px 0;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* List of Users */
+ul {
+    list-style-type: none;
+    margin-top: 1em;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+ul li a:hover {
+    color: #0056b3;
+}
+
+/* Flash messages */
+.messages {
+    margin-bottom: 1em;
+}
+
+.messages p {
+    padding: 0.5em;
+    border-radius: 4px;
+    margin-bottom: 0.5em;
+}
+
+.messages .success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.messages .error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Links */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}

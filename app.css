@@ -1,9 +1,0 @@
-.navbar {
-    background-color: #333;
-    padding: 10px 20px;
-    position: fixed; /* Makes the navbar stay at the top */
-    width: 100%; /* Stretches the navbar across the width of the page */
-    top: 0; /* Aligns it at the top */
-    z-index: 1000; /* Ensures it's above other content */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
-}
