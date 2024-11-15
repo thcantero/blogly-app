@@ -2,6 +2,7 @@ from unittest import TestCase
 from app import app
 from models import db, User
 
+# with app.app_context():
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///users_test' 
 app.config['SQLALCHEMY_ECHO'] = False
 

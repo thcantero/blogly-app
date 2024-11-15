@@ -16,8 +16,11 @@
             <label for="image-url">Image URL</label>
             <input type="text" name="image_url" id="image-url" value={{user.image_url}}>
 
-            <button formaction="/users/{{user.user_id}}/edit" method="POST">Save</button>
-            <button formaction="/users" method="POST">Cancel</button>
+            <div class="form-group text-right">
+                <button formaction="/users/{{user.user_id}}/edit" method="POST">Save</button>
+                <a href="/users" class="btn btn-outline-info">Cancel</a>
+              </div>
+            <!-- <button formaction="/users" method="POST">Cancel</button> -->
         </form>
          <a href="/">Go Back</a>
     </div>

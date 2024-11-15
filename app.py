@@ -24,7 +24,7 @@ def home():
 # **GET */users :*** Show all users. 
 # Make these links to view the detail page for the user. 
 # Have a link here to the add-user form.
-@app.route("/users")
+@app.route("/users", methods=["GET"])
 def list_users():
     """Show list of all users"""
     users = User.query.all()
@@ -33,31 +33,55 @@ def list_users():
 # **GET */users/new :*** Show an add form for users
 # **POST */users/new :*** Process the add form, 
 # adding a new user and going back to ***/users***
-@app.route("/users/new", methods=["GET","POST"])
+
+@app.route("/users/new", methods=["GET", "POST"])
 def create_user():
     if request.method == "GET":
-        #Show form
         return render_template("create_user.html")
-    
     else:
-        #Handle form submission and redirect to /user
+        # Extract form data
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
-        image_url = request.form.get("img_url")
+        image_url = request.form.get("image_url")
+
+        # Validation
+        if not first_name or not last_name:
+            flash("First and Last Name are required!", "error")
+            return redirect("/users/new")
+
+        # Create and commit user
+        new_user = User(first_name=first_name, last_name=last_name, image_url=image_url)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("User added successfully!", "success")
+        return redirect("/users")
+    
+# @app.route("/users/new", methods=["GET","POST"])
+# def create_user():
+#     if request.method == "GET":
+#         #Show form
+#         return render_template("create_user.html")
+    
+#     else:
+#         #Handle form submission and redirect to /user
+#         first_name = request.form.get("first_name")
+#         last_name = request.form.get("last_name")
+#         image_url = request.form.get("image_url")
+
+#         new_user = User(first_name=first_name, last_name=last_name, image_url=image_url)
+#         db.session.add(new_user)
+#         db.session.commit()
+
+#         return redirect(f"/users/{new_user.user_id}")
 
         #I had to add this because I was getting an error: 
         #IntegrityError sqlalchemy.exc.IntegrityError: (psycopg2.errors.NotNullViolation) 
         # null value in column "first_name" of relation "users" violates not-null constraint
         #What do I do to fix it?
-        if not first_name or not last_name:
-            flash("First and Last Name are required!", "error")
-            return redirect("/users/new")
-
-        new_user = User(first_name=first_name, last_name=last_name, image_url=image_url)
-        db.session.add(new_user)
-        db.session.commit()
-
-        return redirect(f"/users/{new_user.user_id}")
+        # if not first_name or not last_name:
+        #     flash("First and Last Name are required!", "error")
+        #     return redirect("/users/new")
 
 # **GET */users/[user-id] :***Show information about the given user. 
 # Have a button to get to their edit page, and to delete the user.
@@ -84,7 +108,7 @@ def edit_user(user_id):
         user = User.query.get_or_404(user_id)
         user.first_name = request.form.get("first_name")
         user.last_name = request.form.get("last_name")
-        user.image_url = request.form.get("img_url")
+        user.image_url = request.form.get("image_url")
 
         db.session.add(user)
         db.session.commit()

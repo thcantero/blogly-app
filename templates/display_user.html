@@ -5,6 +5,14 @@
 <h1>User Details</h1>
     <div class="container">
         <!-- <img> -->
+        {% if user.image_url %}
+        <div class="col-sm-2 col-6">
+          <img src="{{ user.image_url }}"
+               alt="{{ user.full_name }}"
+               class="img-fluid">
+        </div>
+        {% endif %}
+        
          <ul>
             <li>First Name: {{user.first_name}}</li>
             <li>Last Name: {{user.last_name}}</li>
