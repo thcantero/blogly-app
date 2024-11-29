@@ -6,7 +6,7 @@ from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///users_db' #Name of the db we are using 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///users_db1' #Name of the db we are using 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = "SECRET!"
@@ -81,9 +81,9 @@ def create_user():
 @app.route("/users/<int:user_id>")
 def display_user(user_id):
     user = User.query.get_or_404(user_id)
-    posts = Post.query.all()
+    #posts = Post.query.all()
     #user = User.query.get(user_id)
-    return render_template("display_user.html", user=user, posts=posts)
+    return render_template("display_user.html", user=user) #posts=posts)
 
 # **GET */users/[user-id]/edit :*** Show the edit page for a user. 
 # Have a cancel button that returns to the detail page for a user, 
@@ -95,7 +95,7 @@ def edit_user(user_id):
     #Show edit form
     if request.method == "GET":
         user = User.query.get_or_404(user_id)
-        return render_template("edit_user.html", user_id=user_id)
+        return render_template("edit_user.html", user=user)
     
     else:
         #Handle form submission: edit
@@ -127,10 +127,12 @@ def delete_user(user_id):
 @app.route("/users/<int:user_id>/posts/new", methods=["GET","POST"])
 def new_post(user_id):
     if request.method == "GET":
+        #user = User.query.get_or_404(user_id)
         return render_template("post_form.html", user_id=user_id)
     
     else:
         new_post = Post(
+            user_id = user_id,
             title = request.form["title"],
             content = request.form["content"])
 
@@ -138,7 +140,6 @@ def new_post(user_id):
         db.session.commit()
 
         flash("Post created successfully!", "success")
-        #If i have the action in the form, then I don't need to redirect here?
         return redirect(f"/users/{user_id}")
     
 

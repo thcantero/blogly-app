@@ -33,6 +33,11 @@ class User(db.Model):
                           nullable=True,
                           default= DEFAULT_IMAGE_URL)
     
+
+    #Set up the relationship
+    #Use backref set to the desired reference name, not the model
+    posts = db.relationship('Post', backref='user')
+    
     #Set up attribute
     #post = db.relationship('Post')
     
@@ -41,7 +46,7 @@ class Post(db.Model):
      
      def __repr__(self):
            p = self
-           return f"<User name={p.title} {p.content} {p.user_id}>"
+           return f"<Post={p.title} {p.content} {p.user_id}>"
      
      post_id = db.Column(db.Integer,
                          primary_key=True,
@@ -60,9 +65,8 @@ class Post(db.Model):
      user_id = db.Column(db.Integer,
                          db.ForeignKey('users.user_id'))
      
-     #Set up the relationship
-     #Use backref set to the desired reference name, not the model
-     user = db.relationship('User', backref='posts')
+     
+     
 
 
 def get_posts():
