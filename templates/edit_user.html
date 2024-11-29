@@ -8,13 +8,13 @@
         
          <form method="POST">
             <label for="first-name">First Name</label>
-            <input type="text" name="first_name" id="first-name" value={{user.first_name}} required>
+            <input type="text" name="first_name" id="first-name" value="{{user.first_name}}" required>
 
             <label for="last-name">Last Name</label>
-            <input type="text" name="last_name" id="last-name" value={{user.last_name}} required>
+            <input type="text" name="last_name" id="last-name" value="{{user.last_name}}" required>
 
             <label for="image-url">Image URL</label>
-            <input type="text" name="image_url" id="image-url" value={{user.image_url}}>
+            <input type="text" name="image_url" id="image-url" value="{{user.image_url}}">
 
             <div class="form-group text-right">
                 <button formaction="/users/{{user.user_id}}/edit" method="POST">Save</button>

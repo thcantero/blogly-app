@@ -2,7 +2,7 @@
 
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 
@@ -39,23 +39,16 @@ def create_user():
     if request.method == "GET":
         return render_template("create_user.html")
     else:
-        # Extract form data
-        first_name = request.form.get("first_name")
-        last_name = request.form.get("last_name")
-        image_url = request.form.get("image_url")
+        new_user = User(
+            first_name = request.form["first_name"],
+            last_name = request.form["last_name"],
+            image_url = request.form["image_url"] or None)
 
-        # Validation
-        if not first_name or not last_name:
-            flash("First and Last Name are required!", "error")
-            return redirect("/users/new")
-
-        # Create and commit user
-        new_user = User(first_name=first_name, last_name=last_name, image_url=image_url)
         db.session.add(new_user)
         db.session.commit()
 
-        flash("User added successfully!", "success")
-        return redirect("/users")
+        flash("User created successfully!", "success")
+        return redirect(f"/users/{new_user.user_id}")
     
 # @app.route("/users/new", methods=["GET","POST"])
 # def create_user():
@@ -88,8 +81,9 @@ def create_user():
 @app.route("/users/<int:user_id>")
 def display_user(user_id):
     user = User.query.get_or_404(user_id)
+    posts = Post.query.all()
     #user = User.query.get(user_id)
-    return render_template("display_user.html", user=user)
+    return render_template("display_user.html", user=user, posts=posts)
 
 # **GET */users/[user-id]/edit :*** Show the edit page for a user. 
 # Have a cancel button that returns to the detail page for a user, 
@@ -101,7 +95,7 @@ def edit_user(user_id):
     #Show edit form
     if request.method == "GET":
         user = User.query.get_or_404(user_id)
-        return render_template("edit_user.html", user=user)
+        return render_template("edit_user.html", user_id=user_id)
     
     else:
         #Handle form submission: edit
@@ -123,7 +117,46 @@ def delete_user(user_id):
 
     return redirect("/users")
 
-# if __name__ == "__main__":
-#     with app.app_context():
-#         db.create_all()
+
+##POSTS ROUTES
+
+#  **GET */users/[user-id]/posts/new :
+# *** Show form to add a post for that user.
+# **POST */users/[user-id]/posts/new :
+# *** Handle add form; add post and redirect to the user detail page.
+@app.route("/users/<int:user_id>/posts/new", methods=["GET","POST"])
+def new_post(user_id):
+    if request.method == "GET":
+        return render_template("post_form.html", user_id=user_id)
+    
+    else:
+        new_post = Post(
+            title = request.form["title"],
+            content = request.form["content"])
+
+        db.session.add(new_post)
+        db.session.commit()
+
+        flash("Post created successfully!", "success")
+        #If i have the action in the form, then I don't need to redirect here?
+        return redirect(f"/users/{user_id}")
+    
+
+# **GET */posts/[post-id] :
+# *** Show a post. Show buttons to edit and delete the post.
+@app.route("/posts/<int:post_id>")
+def show_post(post_id):
+    #post_id = Post.query.get_or_404(post_id)
+    return render_template("show_post.html", post_id = post_id)
+
+# **GET */posts/[post-id]/edit :
+# *** Show form to edit a post, and to cancel (back to user page).
+# **POST */posts/[post-id]/edit :
+# *** Handle editing of a post. Redirect back to the post view.
+# **POST */posts/[post-id]/delete :
+# *** Delete the post.
+@app.route("/posts/<int:post_id>/edit")
+def edit_post(post_id):
+    return render_template("edit_post.html", post_id=post_id)
+
  
