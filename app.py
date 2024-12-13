@@ -1,12 +1,12 @@
 """Blogly application."""
 
-from flask import Flask, request, render_template, redirect, flash, session
+from flask import Flask, request, render_template, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///users_db1' #Name of the db we are using 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///users_db' #Name of the db we are using 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = "SECRET!"
@@ -15,11 +15,16 @@ debug = DebugToolbarExtension(app)
 
 connect_db(app)
 
-# **GET */ :*** Redirect to list of users. (We’ll fix this in a later step).
+with app.app_context():
+    db.create_all()
+
+# **Make a Homepage**
+#Change the homepage to a page that shows the 5 most recent posts.
 @app.route("/")
 def home():
-    #need to redirect
-    return redirect("/users")
+    """Show recent list of posts, most-recent first."""
+    posts = Post.query.order_by(Post.created_at.desc()).limit(5).all()
+    return render_template("home.html", posts=posts)
 
 # **GET */users :*** Show all users. 
 # Make these links to view the detail page for the user. 
@@ -110,10 +115,11 @@ def edit_user(user_id):
         return redirect(f"/users")
 
 # **POST */users/[user-id]/delete :*** Delete the user.
-@app.route("/users/<int:user_id>/delete")
+@app.route("/users/<int:user_id>/delete", methods=["POST"])
 def delete_user(user_id):
     User.query.filter_by(user_id = user_id).delete()
     db.session.commit()
+    flash("User deleted successfully!", "success")
 
     return redirect("/users")
 
@@ -126,15 +132,17 @@ def delete_user(user_id):
 # *** Handle add form; add post and redirect to the user detail page.
 @app.route("/users/<int:user_id>/posts/new", methods=["GET","POST"])
 def new_post(user_id):
+    """Show a form to create a new post for a specific user"""
+    """Handle form submission for creating a new post for a specific user"""
     if request.method == "GET":
-        #user = User.query.get_or_404(user_id)
-        return render_template("post_form.html", user_id=user_id)
+        user = User.query.get_or_404(user_id)
+        return render_template("post_form.html", user=user)
     
     else:
         new_post = Post(
-            user_id = user_id,
             title = request.form["title"],
-            content = request.form["content"])
+            content = request.form["content"],
+            user_id=user_id)
 
         db.session.add(new_post)
         db.session.commit()
@@ -147,17 +155,44 @@ def new_post(user_id):
 # *** Show a post. Show buttons to edit and delete the post.
 @app.route("/posts/<int:post_id>")
 def show_post(post_id):
-    #post_id = Post.query.get_or_404(post_id)
-    return render_template("show_post.html", post_id = post_id)
+    """Show a page with info on a specific post"""
+    post = Post.query.get_or_404(post_id)
+    return render_template("show_post.html", post = post)
 
 # **GET */posts/[post-id]/edit :
 # *** Show form to edit a post, and to cancel (back to user page).
 # **POST */posts/[post-id]/edit :
 # *** Handle editing of a post. Redirect back to the post view.
-# **POST */posts/[post-id]/delete :
-# *** Delete the post.
-@app.route("/posts/<int:post_id>/edit")
+@app.route("/posts/<int:post_id>/edit", methods=["GET", "POST"])
 def edit_post(post_id):
-    return render_template("edit_post.html", post_id=post_id)
+    """Show a form to edit an existing post"""
+    """Handle form submission for updating an existing post"""
 
+    post = Post.query.get_or_404(post_id)
+    
+    if request.method == "GET":
+        return render_template("edit_post.html", post=post)
+    
+    else:
+        post.title = request.form.get('title')
+        post.content = request.form.get('content')
+    
+    db.session.add(post)
+    db.session.commit()
+
+    flash(f"Post '{post.title}' edited", "success")
+    return redirect(f"/users/{post.user_id}")
  
+ # **POST */posts/[post-id]/delete :
+# *** Delete the post.
+@app.route('/posts/<int:post_id>/delete', methods=["POST"])
+def delete_post(post_id):
+    """Handle form submission for deleting an existing post"""
+
+    post = Post.query.get_or_404(post_id)
+
+    db.session.delete(post)
+    db.session.commit()
+    flash(f"Post '{post.title}' deleted", "success")
+
+    return redirect(f"/users/{post.user_id}")

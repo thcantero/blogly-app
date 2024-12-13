@@ -36,13 +36,19 @@ class User(db.Model):
 
     #Set up the relationship
     #Use backref set to the desired reference name, not the model
-    posts = db.relationship('Post', backref='user')
+    posts = db.relationship('Post', backref='user', cascade="all, delete-orphan")
+
+    @property
+    def full_name(self):
+        """Return full name of user."""
+
+        return f"{self.first_name} {self.last_name}"
     
     #Set up attribute
     #post = db.relationship('Post')
     
 class Post(db.Model):
-     __tablename__ = 'blog_posts'
+     __tablename__ = 'posts'
      
      def __repr__(self):
            p = self
@@ -55,20 +61,25 @@ class Post(db.Model):
      title = db.Column(db.String(50),
                            nullable=False)
      
-     content = db.Column(db.String,
+     content = db.Column(db.Text,
                           nullable=False)
      
      created_at = db.Column(db.DateTime,
                              nullable=False,
-                           default=datetime.now)
+                             default=datetime.now)
      
      user_id = db.Column(db.Integer,
-                         db.ForeignKey('users.user_id'))
+                         db.ForeignKey('users.user_id'),
+                         nullable=False)
+     
+     @property
+     def friendly_date(self):
+          """Return nicely-formatted date"""
+          
+          return self.created_at.strftime("%a %b %-d  %Y, %-I:%M %p")
      
      
      
-
-
 def get_posts():
      all_posts = Post.query.all()
 

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %} HomePage {% endblock %}
+
+<h1>Recent Posts</h1>
+
+{%block content %}
+
+<div class="container">
+{% for post in posts %}
+<h2>
+    <a href="/posts/{{post.post_id}}">{{post.title}}</a>
+</h2>
+
+<p>{{post.content}}</p>
+<p>
+    <small>By {{post.user.full_name}} on {{post.friendly_date}}</small>
+</p>
+{% endfor %}
+</div>
+
+{% endblock %}
