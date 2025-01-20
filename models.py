@@ -8,10 +8,6 @@ db = SQLAlchemy()
 #Image URL 
 DEFAULT_IMAGE_URL = "https://www.freeiconspng.com/uploads/icon-user-blue-symbol-people-person-generic--public-domain--21.png"
 
-def connect_db(app):
-     db.app = app
-     db.init_app(app)
-
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -85,4 +81,37 @@ def get_posts():
 
      for post in all_posts:
           return post.title, post.content
+ 
      
+class Tag(db.Model):
+     __tablename__ = 'tags'
+     
+     id = db.Column(db.Integer,
+                        primary_key=True,
+                        autoincrement=True)
+     
+     name = db.Column(db.String(15),
+                          nullable=False,
+                          unique=True)
+     
+     posts = db.relationship(
+          'Post', secondary='post_tags', cascade="all,delete", backref='tags',
+     )
+     
+     
+class PostTag(db.Model):
+     __tablename__ = 'post_tags'
+     
+     post_id = db.Column(db.Integer,
+                         db.ForeignKey('posts.post_id'),
+                         nullable=False, primary_key = True)
+     
+     tag_id = db.Column(db.Integer,
+                        db.ForeignKey('tags.id'),
+                        nullable=False, primary_key=True)
+     
+     
+def connect_db(app):
+     """Connect database to Flask app"""
+     db.app = app
+     db.init_app(app)
